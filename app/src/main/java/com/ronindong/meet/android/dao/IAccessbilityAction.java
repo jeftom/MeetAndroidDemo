@@ -18,6 +18,9 @@ public interface IAccessbilityAction {
      */
     void performScrollDown();
 
+    /**
+     * @param nodeInfo
+     */
     void performViewClick(AccessibilityNodeInfo nodeInfo);
 
     /**
@@ -29,6 +32,8 @@ public interface IAccessbilityAction {
     AccessibilityNodeInfo findViewByText(String text, boolean clickable);
 
     void clickTextViewByText(String text);
+
+    void clickTextViewByViewId(String viewId);
 
     void performInputText(AccessibilityNodeInfo info, String text);
 

@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MeetAndroidDemo</string>
+    <string name="lbl_access_desc">access服务</string>
+    <string name="lbl_auto_open_red_packet">自动抢红包</string>
+    <string name="lbl_auto_open_red_packet_desc">打开微信红包界面，自动抢红包</string>
 </resources>

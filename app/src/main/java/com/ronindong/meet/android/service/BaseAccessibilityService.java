@@ -3,7 +3,7 @@ package com.ronindong.meet.android.service;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.os.Handler;
-import android.view.accessibility.AccessibilityEvent;
+import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -11,60 +11,42 @@ import com.ronindong.meet.android.dao.IAccessbilityAction;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * @author donghailong
  */
-public class MeetAndroidAccessibilityService extends AccessibilityService
+public abstract class BaseAccessibilityService extends AccessibilityService
         implements IAccessbilityAction {
+    public static final int DELAY_TIME = 1000;
+    private AccessibilityManager mManager;
+    private Context mContext;
+    private Handler mHandler = new Handler();
+    /**
+     * 监听APP包
+     */
+    private String[] packageNames = {"com.android.packageinstaller",
+            "com.android.settings"};
 
-    private AccessibilityManager manager;
-    private Context context;
-    private Handler handler = new Handler();
-
-    public void init(Context cx) {
-        this.context = cx.getApplicationContext();
-        manager = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+    public BaseAccessibilityService() {
+        mManager = (AccessibilityManager) getApplicationContext()
+                .getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
-
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-
-    }
-
-    @Override
-    public void onInterrupt() {
-
-    }
 
     @Override
     public void performBack() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                performGlobalAction(GLOBAL_ACTION_BACK);
-            }
-        }, 1000);
+        performGlobalAction(GLOBAL_ACTION_BACK);
     }
 
     @Override
     public void performScrollUp() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-            }
-        }, 1000);
+        performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
     }
 
     @Override
     public void performScrollDown() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-            }
-        }, 1000);
+        performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
     }
 
     @Override
@@ -108,9 +90,30 @@ public class MeetAndroidAccessibilityService extends AccessibilityService
     public void clickTextViewByText(String text) {
         AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
         if (accessibilityNodeInfo == null) {
+            Log.i(TAG, "accessibilityNodeInfo is null");
             return;
         }
-        List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
+        List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo
+                .findAccessibilityNodeInfosByText(text);
+        if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
+            for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
+                if (nodeInfo != null) {
+                    performViewClick(nodeInfo);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void clickTextViewByViewId(String viewId) {
+        AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
+        if (accessibilityNodeInfo == null) {
+            Log.i(TAG, "accessibilityNodeInfo is null");
+            return;
+        }
+        List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo
+                .findAccessibilityNodeInfosByViewId(viewId);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null) {

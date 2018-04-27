@@ -7,6 +7,9 @@ import android.provider.Settings;
 public class CxHelper {
     private Context context;
 
+    private CxHelper() {
+    }
+
     public void init(Context cx) {
         this.context = cx.getApplicationContext();
     }

@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.ronindong.meet.android.R;
 import com.ronindong.meet.android.helper.CxHelper;
 import com.ronindong.meet.android.manager.SingletonManager;
-import com.ronindong.meet.android.service.MeetAndroidAccessibilityService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         openAccess = findViewById(R.id.openAccess);
         openAccess.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View v) {
