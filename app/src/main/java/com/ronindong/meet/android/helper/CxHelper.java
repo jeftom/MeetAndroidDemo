@@ -4,18 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 
+/**
+ * @author donghailong
+ */
 public class CxHelper {
     private Context context;
 
-    private CxHelper() {
-    }
 
     public void init(Context cx) {
-        this.context = cx.getApplicationContext();
+        if (null != cx) {
+            this.context = cx.getApplicationContext();
+        }
     }
 
     /**
-     *
+     * 打开辅助功能设置
      */
     public void openAccessSetting() {
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);

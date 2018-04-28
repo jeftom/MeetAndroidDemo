@@ -1,8 +1,12 @@
 package com.ronindong.meet.android.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
-import android.os.Handler;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -11,22 +15,17 @@ import com.ronindong.meet.android.dao.IAccessbilityAction;
 
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
 
 /**
  * @author donghailong
  */
 public abstract class BaseAccessibilityService extends AccessibilityService
         implements IAccessbilityAction {
-    public static final int DELAY_TIME = 1000;
-    private AccessibilityManager mManager;
-    private Context mContext;
-    private Handler mHandler = new Handler();
+    private static final String TAG = BaseAccessibilityService.class.getSimpleName();
     /**
-     * 监听APP包
+     *
      */
-    private String[] packageNames = {"com.android.packageinstaller",
-            "com.android.settings"};
+    private AccessibilityManager mManager;
 
     public BaseAccessibilityService() {
         mManager = (AccessibilityManager) getApplicationContext()
@@ -126,11 +125,28 @@ public abstract class BaseAccessibilityService extends AccessibilityService
 
     @Override
     public void performInputText(AccessibilityNodeInfo info, String text) {
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bundle arguments = new Bundle();
+            arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+            info.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("label", text);
+            clipboard.setPrimaryClip(clip);
+            info.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+            info.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+        }
     }
 
     @Override
     public boolean checkAccessbilityEnabled(String serviceName) {
+        List<AccessibilityServiceInfo> accessibilityServices =
+                mManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo info : accessibilityServices) {
+            if (info.getId().equals(serviceName)) {
+                return true;
+            }
+        }
         return false;
     }
 }

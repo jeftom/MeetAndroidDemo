@@ -10,7 +10,7 @@ import com.ronindong.meet.android.manager.SingletonManager;
  */
 public class MeetAndroidApplication extends Application {
 
-    private static volatile MeetAndroidApplication inst;
+    private static MeetAndroidApplication inst;
 
     public static MeetAndroidApplication getInstance() {
         return inst;
@@ -25,6 +25,6 @@ public class MeetAndroidApplication extends Application {
     }
 
     private void init() {
-        SingletonManager.get(CxHelper.class).init(inst);
+        SingletonManager.get(CxHelper.class).init(this);
     }
 }
