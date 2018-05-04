@@ -1,7 +1,11 @@
 package com.ronindong.meet.android.service;
 
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+
+import java.util.List;
 
 
 /**
@@ -28,8 +32,18 @@ public class AutoOpenRedPacketService extends BaseAccessibilityService {
         Log.i(TAG, "event type:" + event.getEventType());
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
                 && event.getPackageName().equals(WX_PACKAGE_NAME)) {
-            clickTextViewByText(WX_RED_PACKAGE_TEXT);
-            clickTextViewByViewId(WX_OPEN_RED_PACKAGE_VIEW_ID);
+            AccessibilityNodeInfo viewByText = findViewByText(WX_RED_PACKAGE_TEXT);
+            if (viewByText != null) {
+                performViewClick(viewByText);
+                clickTextViewByViewId(WX_OPEN_RED_PACKAGE_VIEW_ID);
+            } else {
+                AccessibilityNodeInfo viewByViewId = findViewByViewId("com.tencent.mm:id/apx");
+                if (null != viewByViewId
+                        && viewByViewId.getText().toString().contains(WX_RED_PACKAGE_TEXT)) {
+                    performViewClick(viewByViewId);
+                    clickTextViewByViewId(WX_OPEN_RED_PACKAGE_VIEW_ID);
+                }
+            }
         }
     }
 

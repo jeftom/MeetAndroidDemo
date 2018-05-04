@@ -41,6 +41,22 @@ public interface IAccessbilityAction {
      * @return
      */
     AccessibilityNodeInfo findViewByText(String text, boolean clickable);
+    /**
+     * 根据文本获取view控件
+     *
+     * @param viewId
+     * @return
+     */
+    AccessibilityNodeInfo findViewByViewId(String viewId);
+
+    /**
+     * 根据文本获取view控件
+     *
+     * @param viewId
+     * @param clickable
+     * @return
+     */
+    AccessibilityNodeInfo findViewByViewId(String viewId, boolean clickable);
 
     /**
      * 点击指定text的view

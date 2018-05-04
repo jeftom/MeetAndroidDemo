@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * @author donghailong
  */
-public abstract class BaseAccessibilityService extends AccessibilityService
+public class BaseAccessibilityService extends AccessibilityService
         implements IAccessbilityAction {
     private static final String TAG = BaseAccessibilityService.class.getSimpleName();
     /**
@@ -28,8 +29,18 @@ public abstract class BaseAccessibilityService extends AccessibilityService
     private AccessibilityManager mManager;
 
     public BaseAccessibilityService() {
-        mManager = (AccessibilityManager) getApplicationContext()
-                .getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        mManager = (AccessibilityManager) getApplicationContext()
+//                .getSystemService(Context.ACCESSIBILITY_SERVICE);
+    }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+
+    }
+
+    @Override
+    public void onInterrupt() {
+
     }
 
 
@@ -75,6 +86,29 @@ public abstract class BaseAccessibilityService extends AccessibilityService
         }
         List<AccessibilityNodeInfo> nodeInfoList =
                 accessibilityNodeInfo.findAccessibilityNodeInfosByText(text);
+        if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
+            for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
+                if (nodeInfo != null && (nodeInfo.isClickable() == clickable)) {
+                    return nodeInfo;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public AccessibilityNodeInfo findViewByViewId(String viewId) {
+        return findViewByViewId(viewId, true);
+    }
+
+    @Override
+    public AccessibilityNodeInfo findViewByViewId(String viewId, boolean clickable) {
+        AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
+        if (accessibilityNodeInfo == null) {
+            return null;
+        }
+        List<AccessibilityNodeInfo> nodeInfoList =
+                accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(viewId);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null && (nodeInfo.isClickable() == clickable)) {

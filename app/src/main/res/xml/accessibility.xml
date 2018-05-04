@@ -2,10 +2,10 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeAllMask"
     android:accessibilityFeedbackType="feedbackAllMask"
-    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows
-    |flagReportViewIds|flagRequestFilterKeyEvents"
+    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagReportViewIds|flagRequestFilterKeyEvents"
     android:canRequestEnhancedWebAccessibility="true"
     android:canRequestTouchExplorationMode="true"
     android:canRetrieveWindowContent="true"
     android:description="@string/lbl_auto_open_red_packet_desc"
-    android:notificationTimeout="1000" />
+    android:notificationTimeout="1000"
+    android:packageNames="com.tencent.mm" />
